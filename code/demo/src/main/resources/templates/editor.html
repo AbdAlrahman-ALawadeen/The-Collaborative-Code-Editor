@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OneCompiler Clone</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: rgb(15, 20, 50);
+        }
+
+        header {
+            width: 100%;
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80px;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .buttons {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .run-button,
+        .command,
+        .add-collaborator,
+        .create,
+        .upload,
+        .sign-out {
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .run-button:hover,
+        .command:hover,
+        .add-collaborator:hover,
+        .create:hover,
+        .upload:hover,
+        .sign-out:hover {
+            background: rgb(189, 185, 185);
+            border-color: white;
+            color: white;
+        }
+
+        .output {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            height: 200px;
+            color: white;
+        }
+
+        footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .dropdown {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            margin-top: 5px;
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dropdown-button {
+            background-color: rgb(189, 185, 185);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px;
+            cursor: pointer;
+            text-align: center;
+            margin: 5px 0;
+        }
+
+        .dropdown-button:hover {
+            background: rgb(189, 185, 185);
+            border-color: white;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Code Editor</h1>
+    </header>
+    <main>
+        <div class="buttons">
+            <select id="language-select">
+                <option value="python">Python</option>
+                <option value="cpp">C++</option>
+                <option value="java">Java</option>
+            </select>
+            <button class="run-button">Run Code</button>
+            <div class="command-container">
+                <button class="command" id="commandButton">Commands</button>
+                <div id="commandDropdown" class="dropdown" style="display:none;">
+                    <button class="dropdown-button">Save</button>
+                    <button class="dropdown-button">Edit</button>
+                    <button class="dropdown-button">Comment</button>
+                    <button class="dropdown-button">Review</button>
+                </div>
+            </div>
+            <div class="create-container">
+                <button class="create" id="createButton">Create</button>
+                <div id="createDropdown" class="dropdown" style="display:none;">
+                    <button class="dropdown-button">Create File</button>
+                    <button class="dropdown-button">Create Folder</button>
+                </div>
+            </div>
+            <div class="upload-container">
+                <button class="upload" id="uploadButton">Upload</button>
+                <div id="uploadDropdown" class="dropdown" style="display:none;">
+                    <button class="dropdown-button">Upload File</button>
+                    <button class="dropdown-button">Upload Folder</button>
+                    <button class="dropdown-button">Clone Project</button>
+                </div>
+            </div>
+            <div class="sign-out-container">
+                <button class="sign-out" id="signOutButton">Sign out</button>
+            </div>
+        </div>
+        <div class="editor">
+            <textarea id="code-editor" placeholder="Write your code here..."></textarea>
+        </div>
+        <div class="output">
+            <pre id="outputArea"></pre>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Code Editor</p>
+    </footer>
+
+    <script>
+        const runButton = document.querySelector(".run-button");
+        const outputArea = document.getElementById("outputArea");
+        const createButton = document.getElementById("createButton");
+        const uploadButton = document.getElementById("uploadButton");
+        const commandButton = document.getElementById("commandButton");
+        const signOutButton = document.getElementById("signOutButton");
+
+        const createDropdown = document.getElementById("createDropdown");
+        const uploadDropdown = document.getElementById("uploadDropdown");
+        const commandDropdown = document.getElementById("commandDropdown");
+
+
+        runButton.addEventListener("click", () => {
+            const code = document.getElementById("code-editor").value;
+            const language = document.getElementById("language-select").value;
+
+            fetch('/controller/runCode', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ code, language })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    outputArea.textContent = result.result || result.error;
+                })
+                .catch(error => {
+                    outputArea.textContent = `Error: ${error.message}`;
+                });
+        });
+
+        function toggleDropdown(dropdown) {
+            const dropdowns = [createDropdown, uploadDropdown, commandDropdown];
+            dropdowns.forEach((d) => {
+                if (d !== dropdown) {
+                    d.style.display = 'none';
+                }
+            });
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        }
+        createButton.addEventListener("click", (event) => {
+            event.stopPropagation();
+            toggleDropdown(createDropdown);
+        });
+
+        uploadButton.addEventListener("click", (event) => {
+            event.stopPropagation();
+            toggleDropdown(uploadDropdown);
+        });
+
+        commandButton.addEventListener("click", (event) => {
+            event.stopPropagation();
+            toggleDropdown(commandDropdown);
+        });
+
+        window.addEventListener("click", () => {
+            createDropdown.style.display = "none";
+            uploadDropdown.style.display = "none";
+            commandDropdown.style.display = "none";
+        });
+
+        signOutButton.addEventListener("click", () => {
+            document.querySelector("textarea").value = "";
+            outputArea.textContent = "";
+
+            localStorage.clear();
+            window.location.href = "/controller/index";
+        });
+    </script>
+</body>
+</html>
