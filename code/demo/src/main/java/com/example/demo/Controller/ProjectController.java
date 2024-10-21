@@ -1,7 +1,6 @@
 package com.example.demo.Controller;
 
 import com.example.demo.DAO.DAO;
-import com.example.demo.Model.Project;
 import com.example.demo.Model.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
@@ -19,8 +18,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/controller")
 public class ProjectController {
     private final DAO dao;
-    private User user;
-    private String fileName = "";
 
     public ProjectController(DAO dao) {
         this.dao = dao;
@@ -50,7 +47,7 @@ public class ProjectController {
     public ResponseEntity<Map<String, Object>> verifyInfo(@RequestParam String email,
                                                           @RequestParam String password,
                                                           HttpSession session) {
-        user = dao.fetchUserData(email);
+        User user = dao.fetchUserData(email);
 
         if (user == null || !user.getPassword().equals(password)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid username or password"));
@@ -157,65 +154,5 @@ public class ProjectController {
                     .body(Map.of("error", "Error executing the code: " + e.getMessage()));
         }
     }
-
-    @PostMapping("/saveCode")
-    public ResponseEntity<Map<String, String>> saveCode(@RequestBody Map<String, String> request){
-        String code = request.get("code");
-        String name = request.get("fileName");
-        String exist = request.get("exist");
-        try{
-            String result = dao.saveProject(code, name, user, exist);
-            System.out.println(result);
-            fileName = name;
-            return ResponseEntity.ok(Map.of("result", result));
-        }
-        catch (Exception e){
-            System.out.println("Error: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Error saving the code: " + e.getMessage()));
-        }
-    }
-
-    @PostMapping("/checkFileExistence")
-    public ResponseEntity<Map<String, Object>> checkFileExistence(@RequestBody Map<String, String> request) {
-        String code = request.get("code");
-        if (fileName != "") {
-            return ResponseEntity.ok(Map.of("fileExists", true, "fileName", fileName));
-        } else {
-            return ResponseEntity.ok(Map.of("fileExists", false));
-        }
-    }
-
-    @PostMapping("/fetchCode")
-    public ResponseEntity<Map<String, String>> fetchCode(@RequestBody Map<String, String> request){
-        String name = request.get("projectName");
-
-        try{
-            Project project = dao.fetchCode(name);
-            String result = project.getContent();
-            System.out.println(result);
-            fileName = name;
-            return ResponseEntity.ok(Map.of("result", result));
-        }
-        catch (Exception e){
-            System.out.println("Error: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Error saving the code: " + e.getMessage()));
-        }
-    }
-
-    @PostMapping("/fetchProjects")
-    public ResponseEntity<List<Project>> fetchProjects() {
-        List<Project> projects = dao.fetchProjects(user.getID());
-
-        if (projects != null && !projects.isEmpty()) {
-            return ResponseEntity.ok(projects);
-        } else {
-            return ResponseEntity.noContent().build();
-        }
-    }
-
 
 }
