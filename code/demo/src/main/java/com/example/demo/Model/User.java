@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 public class User {
@@ -26,5 +29,16 @@ public class User {
     @NotNull
     @NotEmpty
     private Long ID;
+
+    @Getter
+    List<Project> projects = new ArrayList<>();
+
+    public void addProject(Project project) {
+        projects.add(project);
+    }
+
+    public void removeProject(Project project) {
+        projects.remove(project);
+    }
 
 }
