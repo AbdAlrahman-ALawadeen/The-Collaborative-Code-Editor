@@ -1,0 +1,56 @@
+create table user(
+username varchar(50) NOT NULL,
+email varchar(50) NOT NULL UNIQUE,
+hashPassword varchar(20) NOT NULL,
+id BIGINT NOT NULL AUTO_INCREMENT,
+PRIMARY KEY(id)
+);
+
+create table collaborators(
+admin_id BIGINT NOT NULL,
+collaborator_id BIGINT NOT NULL,
+project_id BIGINT NOT NULL,
+FOREIGN KEY(admin_id) REFERENCES user(id) ON DELETE CASCADE,
+FOREIGN KEY(collaborator_id) REFERENCES user_file(user_id) ON DELETE CASCADE,
+FOREIGN KEY(project_id) REFERENCES file(id) ON DELETE CASCADE,
+PRIMARY KEY(admin_id)
+);
+
+create table file(
+    name VARCHAR(50) NOT NULL UNIQUE,
+    content TEXT NOT NULL,
+    id BIGINT NOT NULL UNIQUE AUTO_INCREMENT,
+    PRIMARY KEY(id)
+);
+
+create table comment(
+	id BIGINT NOT NULL AUTO_INCREMENT,
+    fileID BIGINT NOT NULL,
+    userID BIGINT NOT NULL,
+    comment TEXT NOT NULL,
+     PRIMARY KEY (id),
+    FOREIGN KEY (fileID) REFERENCES file(id) ON DELETE CASCADE,
+    FOREIGN KEY (userID) REFERENCES user(id) ON DELETE CASCADE
+);
+
+CREATE TABLE versions (
+	id BIGINT NOT NULL AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    file_id BIGINT NOT NULL,
+    content TEXT NOT NULL,
+    language VARCHAR(50),
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (file_id) REFERENCES file(id) ON DELETE CASCADE
+);
+
+CREATE TABLE user_file (
+    user_id BIGINT NOT NULL,
+    file_id BIGINT NOT NULL,
+    content TEXT NOT NULL,
+    role VARCHAR(20) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (file_id) REFERENCES file(id) ON DELETE CASCADE,
+    PRIMARY KEY(user_id, file_id)
+);

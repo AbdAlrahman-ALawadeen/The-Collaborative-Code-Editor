@@ -6,10 +6,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@SuppressWarnings("ALL")
 @Getter
 @Setter
 public class User {
-
     @Email
     @NotNull
     @NotEmpty
@@ -26,5 +29,16 @@ public class User {
     @NotNull
     @NotEmpty
     private Long ID;
+
+    @Getter
+    List<File> files = new ArrayList<>();
+
+    public void addFile(File file) {
+        files.add(file);
+    }
+
+    public void removeFile(File file) {
+        files.remove(file);
+    }
 
 }

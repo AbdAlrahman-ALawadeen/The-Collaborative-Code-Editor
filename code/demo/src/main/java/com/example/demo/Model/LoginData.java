@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+@SuppressWarnings("ALL")
 public class LoginData {
     @Email
     @NotEmpty

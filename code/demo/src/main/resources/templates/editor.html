@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--suppress ALL -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -25,6 +26,7 @@
             padding: 20px;
             color: white;
             display: flex;
+            font-size: 30px;
             justify-content: center;
             align-items: center;
             height: 80px;
@@ -60,11 +62,10 @@
             gap: 10px;
         }
 
+        #language-select,
         .run-button,
         .command,
-        .add-collaborator,
         .create,
-        .upload,
         .sign-out {
             background-color: white;
             color: black;
@@ -75,29 +76,58 @@
             position: relative;
         }
 
+        #language-select:hover,
         .run-button:hover,
         .command:hover,
-        .add-collaborator:hover,
         .create:hover,
-        .upload:hover,
         .sign-out:hover {
             background: rgb(189, 185, 185);
             border-color: white;
             color: white;
         }
 
+        .input-output-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input {
+            width: 40%;
+        }
+
         .output {
+            width: 90%;
             border: 1px solid #ccc;
             border-radius: 5px;
             padding: 10px;
             height: 200px;
             color: white;
+            background-color: rgb(15, 15, 30);
+            font-family: monospace;
+            overflow-y: auto;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        #inputArea {
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            background-color: rgb(15, 15, 30);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            color: white;
+            font-family: monospace;
+            line-height: 1.5;
         }
 
         footer {
-            background-color: #f1f1f1;
+            background-color: rgb(15, 20, 50);
             text-align: center;
             padding: 10px;
+            color: white;
+            font-size: 22px;
         }
 
         .dropdown {
@@ -111,6 +141,72 @@
             padding: 5px;
             display: flex;
             flex-direction: column;
+        }
+
+        .projects {
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .projects:hover {
+            background: rgb(189, 185, 185);
+            border-color: white;
+            color: white;
+        }
+
+        .collaborate {
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .collaborate:hover {
+            background: rgb(189, 185, 185);
+            border-color: white;
+            color: white;
+        }
+
+        .deleteProject {
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .deleteProject:hover {
+            background: rgb(189, 185, 185);
+            border-color: white;
+            color: white;
+        }
+
+        .remove {
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .remove:hover {
+            background: rgb(189, 185, 185);
+            border-color: white;
+            color: white;
+        }
+
+        .dropdown {
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            padding: 10px;
         }
 
         .dropdown-button {
@@ -129,87 +225,189 @@
             border-color: white;
             color: white;
         }
+
     </style>
 </head>
 
 <body>
-    <header>
-        <h1>Code Editor</h1>
-    </header>
-    <main>
-        <div class="buttons">
-            <select id="language-select">
-                <option value="python">Python</option>
-                <option value="cpp">C++</option>
-                <option value="java">Java</option>
-            </select>
-            <button class="run-button">Run Code</button>
-            <div class="command-container">
-                <button class="command" id="commandButton">Commands</button>
-                <div id="commandDropdown" class="dropdown" style="display:none;">
-                    <button class="dropdown-button">Save</button>
-                    <button class="dropdown-button">Edit</button>
-                    <button class="dropdown-button">Comment</button>
-                    <button class="dropdown-button">Review</button>
+<header>
+    <h1>Code Editor</h1>
+</header>
+<main>
+    <div class="buttons">
+        <select id="language-select">
+            <option value="python">Python</option>
+            <option value="cpp">C++</option>
+            <option value="java">Java</option>
+        </select>
+
+        <button class="run-button">Run Code</button>
+
+        <div class="command-container">
+            <button class="command" id="commandButton">List Commands</button>
+            <div id="commandDropdown" class="dropdown" style="display:none;">
+                <button class="dropdown-button" id="save-button">Save Project</button><br>
+                <button class="dropdown-button" id="createButton">Create Project</button><br>
+                <div class="upload-container">
+                    <button class="dropdown-button" id="uploadButton">Upload File</button>
+                    <input type="file" id="fileInput" style="display: none;" /><br>
                 </div>
-            </div>
-            <div class="create-container">
-                <button class="create" id="createButton">Create</button>
-                <div id="createDropdown" class="dropdown" style="display:none;">
-                    <button class="dropdown-button">Create File</button>
-                    <button class="dropdown-button">Create Folder</button>
-                </div>
-            </div>
-            <div class="upload-container">
-                <button class="upload" id="uploadButton">Upload</button>
-                <div id="uploadDropdown" class="dropdown" style="display:none;">
-                    <button class="dropdown-button">Upload File</button>
-                    <button class="dropdown-button">Upload Folder</button>
-                    <button class="dropdown-button">Clone Project</button>
-                </div>
-            </div>
-            <div class="sign-out-container">
-                <button class="sign-out" id="signOutButton">Sign out</button>
+                <button class="dropdown-button" id="comment-button">Send Comment</button>
+
             </div>
         </div>
-        <div class="editor">
-            <textarea id="code-editor" placeholder="Write your code here..."></textarea>
+
+        <div class="projects-container">
+            <button class="projects" id="projectsButton">List Projects</button>
+            <div id="projectsDropdown" class="dropdown" style="display:none;"></div>
         </div>
+
+        <div class="versions-container">
+            <button class="projects" id="versionsButton">Show History</button>
+            <div id="versionsDropdown" class="dropdown" style="display:none;"></div>
+        </div>
+
+        <div class="comments-container">
+            <button class="projects" id="commentsButton">Show Comments</button>
+            <div id="commentsDropdown" class="dropdown" style="display:none;"></div>
+        </div>
+
+        <div class="create-container">
+            <button class="collaborate" id="addCollaboratorButton">Add Collaborator</button>
+        </div>
+
+        <div class="remove-container">
+            <button class="remove" id="removeCollaboratorButton">Remove Collaborator</button>
+            <div id="removeCollaboratorsDropdown" class="dropdown" style="display:none;"></div>
+        </div>
+
+        <div class="delete-container">
+            <button class="deleteProject" id="deleteProject">Delete Current Project</button>
+        </div>
+
+        <div class="sign-out-container">
+            <button class="sign-out" id="signOutButton">Sign out</button>
+        </div>
+    </div>
+
+    <div class="editor">
+        <textarea id="code-editor" placeholder="Write your code here..."></textarea>
+    </div>
+
+    <div class="input-output-container">
         <div class="output">
             <pre id="outputArea"></pre>
         </div>
-    </main>
-    <footer>
-        <p>&copy; 2024 Code Editor</p>
-    </footer>
+        <div class="input">
+            <textarea id="inputArea" placeholder="Enter your input here..."></textarea>
+        </div>
+    </div>
 
-    <script>
-        const runButton = document.querySelector(".run-button");
-        const outputArea = document.getElementById("outputArea");
-        const createButton = document.getElementById("createButton");
-        const uploadButton = document.getElementById("uploadButton");
-        const commandButton = document.getElementById("commandButton");
-        const signOutButton = document.getElementById("signOutButton");
+</main>
+<footer>
+    <p >&copy; 2024 Code Editor</p>
+</footer>
 
-        const createDropdown = document.getElementById("createDropdown");
-        const uploadDropdown = document.getElementById("uploadDropdown");
-        const commandDropdown = document.getElementById("commandDropdown");
+<script>
+    const runButton = document.querySelector(".run-button");
+    const outputArea = document.getElementById("outputArea");
+    const createButton = document.querySelector("#createButton");
+    const uploadButton = document.querySelector("#uploadButton");
+    const fileInput = document.getElementById("fileInput");
+    const commandButton = document.getElementById("commandButton");
+    const signOutButton = document.getElementById("signOutButton");
+    const deleteProjectButton = document.getElementById("deleteProject");
+    const commandDropdown = document.getElementById("commandDropdown");
+    const removeCollaborator = document.getElementById("removeCollaboratorButton");
+    const saveButton = document.querySelector("#save-button");
+    const removeCollaboratorDropdown =  document.getElementById("removeCollaboratorsDropdown");
+    const projectsButton = document.getElementById("projectsButton");
+    const projectsDropdown = document.getElementById("projectsDropdown");
+    const versionsButton = document.getElementById("versionsButton");
+    const versionsDropdown = document.getElementById("versionsDropdown");
+    const collaborateButton = document.querySelector("#addCollaboratorButton");
+    const commentButton = document.querySelector("#comment-button");
+    const showCommentsButton = document.querySelector("#commentsButton");
+    const showCommentsDropDown =document.getElementById("commentsDropdown");
+
+    let codeEditor = "null";
+    var projectName = null;
+    var fileID = null;
+    var role = null;
 
 
-        runButton.addEventListener("click", () => {
-            const code = document.getElementById("code-editor").value;
-            const language = document.getElementById("language-select").value;
+    function toggleDropdown(dropdown) {
+        const dropdowns = [commandDropdown, removeCollaboratorDropdown, versionsDropdown, projectsDropdown, showCommentsDropDown];
+        dropdowns.forEach((d) => {
+            if (d !== dropdown) {
+                d.style.display = 'none';
+            }
+        });
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
 
+    uploadButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        fileInput.click();
+    });
+
+    fileInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (!file) {
+            alert("No file selected.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        fetch('/file/upload-file', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(`${errorData.error}\n`);
+                    });
+                }
+                return response.json();
+            })
+            .then(result => {
+                document.querySelector("textarea").value = result.content;
+            })
+            .catch(error => {
+                alert(`Error: ${error.message}`);
+            });
+    });
+
+    commandButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        toggleDropdown(commandDropdown);
+    });
+
+    runButton.addEventListener("click", () => {
+        const code = document.getElementById("code-editor").value;
+        const language = document.getElementById("language-select").value;
+        const userInput = document.getElementById('inputArea').value;
+        this.codeEditor = code;
+
+        if(this.codeEditor === "null"){
+            alert("Please write your code.");
+        }
+        else{
             fetch('/controller/runCode', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ code, language })
+                body: JSON.stringify({ code, language, userInput })
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        return response.json().then(errorData => {
+                            throw new Error(`${errorData.error}\n`);
+                        });
                     }
                     return response.json();
                 })
@@ -219,45 +417,495 @@
                 .catch(error => {
                     outputArea.textContent = `Error: ${error.message}`;
                 });
-        });
-
-        function toggleDropdown(dropdown) {
-            const dropdowns = [createDropdown, uploadDropdown, commandDropdown];
-            dropdowns.forEach((d) => {
-                if (d !== dropdown) {
-                    d.style.display = 'none';
-                }
-            });
-            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
         }
-        createButton.addEventListener("click", (event) => {
-            event.stopPropagation();
-            toggleDropdown(createDropdown);
-        });
+    });
 
-        uploadButton.addEventListener("click", (event) => {
-            event.stopPropagation();
-            toggleDropdown(uploadDropdown);
-        });
+    createButton.addEventListener("click", (event) => {
+        document.querySelector("textarea").value = "";
+        outputArea.textContent = "";
+        this.fileID = null;
+        this.projectName = null;
+        codeEditor = "null";
 
-        commandButton.addEventListener("click", (event) => {
-            event.stopPropagation();
-            toggleDropdown(commandDropdown);
-        });
+        fetch('/controller/createProject', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ action: "createProject" })
+        })
+    });
 
-        window.addEventListener("click", () => {
-            createDropdown.style.display = "none";
-            uploadDropdown.style.display = "none";
-            commandDropdown.style.display = "none";
-        });
+    window.addEventListener("click", () => {
+        uploadDropdown.style.display = "none";
+        commandDropdown.style.display = "none";
+    });
 
-        signOutButton.addEventListener("click", () => {
-            document.querySelector("textarea").value = "";
-            outputArea.textContent = "";
+    saveButton.addEventListener("click", () => {
+        const code = document.getElementById("code-editor").value;
+        this.codeEditor = code;
+        if(codeEditor === ""){
+            alert("Please write your code.");
+        }
+        else{
+            fetch('/controller/checkFileExistence', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(`${errorData.error}\n`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    let exist = false;
+                    if (result.fileExists) {
+                        exist = true;
+                        this.role = result.role;
+                        projectName = result.fileName;
+                        saveFileToDatabase(result.fileName, code, exist, this.role);
+                    } else {
+                        const fileName = prompt("Enter the name of the file:");
+                        if (fileName) {
+                            this.role = "Admin";
+                            projectName = fileName;
+                            saveFileToDatabase(fileName, code, exist, this.role);
+                        } else {
+                            alert("File name cannot be empty.");
+                        }
+                    }
+                })
+                .catch(error => {
+                    alert(`Error: ${error.message}`);
+                });
+        }
 
-            localStorage.clear();
-            window.location.href = "/controller/index";
-        });
-    </script>
+    });
+
+    commentButton.addEventListener("click", () => {
+        const text = prompt("Enter your comment:");
+        if(fileID === null){
+            alert("You should save project");
+        }
+        else if(text === ""){
+            alert("Please write your comment.");
+        }
+        else{
+            fetch('/controller/sendComment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text, fileID })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(`${errorData.error}\n`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    if(result.message){
+                        alert("Comment has been sent.");
+                    }
+                    else{
+                        alert("Comment has not been sent.");
+                    }
+                })
+                .catch(error => {
+                    alert(`Error: ${error.message}`);
+                });
+        }
+
+    });
+
+    showCommentsButton.addEventListener("click", () => {
+        fetch('/controller/fetchComments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "fileID" : fileID })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error("No comments found.");
+                    });
+                }
+                return response.json();
+            })
+            .then(result => {
+                showCommentsDropDown.innerHTML = '';
+
+                let x = 1;
+                result.forEach((comments) => {
+                    const showButton = document.createElement('button');
+                    showButton.classList.add('dropdown-button');
+                    showButton.textContent = "User ID: " + comments.userID + " Comment Number" + x;
+                    showButton.addEventListener('click', () => {
+                        showComment(comments.comment);
+                    });
+                    showCommentsDropDown.appendChild(showButton);
+                    x = x + 1;
+                });
+
+                toggleDropdown(showCommentsDropDown);
+            })
+            .catch(error => {
+                alert(`Error fetching projects: ${error.message}`);
+            });
+
+    });
+
+    function showComment(comment) {
+        alert(comment);
+    }
+
+    function saveFileToDatabase(fileName, code, exist, role) {
+        projectName = fileName;
+        fetch('/controller/saveCode', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ code, fileName, exist, role, fileID })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(`${errorData.error}\n`);
+                    });
+                }
+                return response.json();
+            })
+            .then(result => {
+                this.fileID = result.id;
+                alert(result.message || "File saved successfully!");
+            })
+            .catch(error => {
+                alert(`Error: ${error.message}`);
+            });
+    }
+
+    projectsButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+
+        fetch('/controller/fetchProjects', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ action: "listProjects" })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error: No File Found!");
+                }
+                return response.json();
+            })
+            .then(files => {
+                projectsDropdown.innerHTML = '';
+
+                files.forEach((file) => {
+                    const projectButton = document.createElement('button');
+                    projectButton.classList.add('dropdown-button');
+                    projectButton.textContent = file.fileName;
+                    this.fileID = file.id;
+                    this.fileName = file.fileName;
+                    projectButton.addEventListener('click', () => {
+                        fetchProjectCode(file.fileName, file.id);
+                    });
+
+                    projectsDropdown.appendChild(projectButton);
+                });
+
+                toggleDropdown(projectsDropdown);
+            })
+            .catch(error => {
+                alert(`Error fetching projects: ${error.message}`);
+            });
+    });
+
+    function fetchProjectCode(projectName, fileID) {
+        this.projectName = projectName;
+        fetch('/controller/fetchCode', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ projectName , fileID})
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(`${errorData.error}\n`);
+                    });
+                }
+                return response.json();
+            })
+            .then(response => {
+                const codeEditor = document.getElementById("code-editor");
+                this.codeEditor = response.message;
+                this.fileID = fileID;
+                this.role = response.role;
+                codeEditor.value = response.message || "No code found for this project.";
+            })
+            .catch(error => {
+                alert(`Error fetching code: ${error.message}`);
+            });
+    }
+
+    versionsButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+
+        fetch('/controller/fetchVersions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "fileId" : fileID })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("No Versions Found!");
+                }
+                return response.json();
+            })
+            .then(versions => {
+                versionsDropdown.innerHTML = '';
+
+                versions.forEach((version) => {
+                    const projectButton = document.createElement('button');
+                    projectButton.classList.add('dropdown-button');
+                    projectButton.textContent = version.lastUpdated;
+
+                    projectButton.addEventListener('click', () => {
+                        fetchVersionCode(version);
+                    });
+
+                    versionsDropdown.appendChild(projectButton);
+                });
+
+                toggleDropdown(versionsDropdown);
+            })
+            .catch(error => {
+                alert(`Error fetching projects: ${error.message}`);
+            });
+    });
+
+    function fetchVersionCode(version) {
+        const codeEditor = document.getElementById("code-editor");
+        this.codeEditor = version.content;
+        codeEditor.value = version.content;
+    }
+
+    collaborateButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if(this.projectName === null){
+            alert("Should Save Project.");
+        }
+        else if(this.role !== "Admin"){
+            alert("You can't add collaborators because you are collaborating on this project. " + this.role);
+        }
+        else{
+            const collaboratorEmail = prompt("Enter the email of the collaborator:");
+            fetch('/controller/userExist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ "email" : collaboratorEmail })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(`${errorData.error}\n`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    let exist = false;
+                    if (result.collaboratorID == false) {
+                        alert("Collaborator does not registered");
+                    }
+                    else {
+                        addFileToCollaborator(this.projectName, this.codeEditor, this.fileID, result.collaboratorID);
+                    }
+                })
+                .catch(error => {
+                    alert(`Error: ${error.message}`);
+                });
+        }
+    });
+
+    function addFileToCollaborator(projectName, code, fileID, collaboratorID) {
+        fetch('/controller/addFileToCollaborator', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ projectName, code, fileID, collaboratorID})
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(`${errorData.error}\n`);
+                    });
+                }
+                return response.json();
+            })
+            .then(result => {
+                alert(result.message);
+            })
+            .catch(error => {
+                alert(`Error: ${error.message}`);
+            });
+    }
+
+    deleteProjectButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if(role !== "Admin"){
+            alert("You can't delete this project because you are collaborating on this project.");
+        }
+        else if(projectName === null){
+            alert("Should Choose Project.");
+        }
+        else{
+            const temp = prompt("Are u you want to delete this project? Write yes or no.");
+            if(temp === "yes" || temp === "Yes"){
+                fetch('/controller/deleteProject', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({"fileID" : fileID})
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(errorData => {
+                                throw new Error(`${errorData.error}\n`);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(result => {
+                        projectName = null;
+                        fileID = null;
+                        role = null;
+                        alert(result.message);
+                    })
+                    .catch(error => {
+                        alert(`Error: ${error.message}`);
+                    });
+            }
+        }
+
+
+    });
+
+    removeCollaborator.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if(role != "Admin"){
+            alert("You can't delete this project because you are collaborating on this project.");
+        }
+        else if(projectName === null){
+            alert("Should Choose Project.");
+        }
+        else{
+            fetch('/controller/fetchCollaborators', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ action: "listVersions" })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("No collaborators found!");
+                    }
+                    return response.json();
+                })
+                .then(collaborators => {
+                    removeCollaboratorDropdown.innerHTML = '';
+
+                    collaborators.forEach((collaborator) => {
+                        const collaboratorsButton = document.createElement('button');
+                        collaboratorsButton.classList.add('dropdown-button');
+                        collaboratorsButton.textContent = collaborator.collaboratorID;
+
+                        collaboratorsButton.addEventListener('click', () => {
+                            remove(collaborator);
+                        });
+
+                        removeCollaboratorDropdown.appendChild(collaboratorsButton);
+                    });
+
+                    toggleDropdown(removeCollaboratorDropdown);
+                })
+                .catch(error => {
+                    alert(`Error fetching projects: ${error.message}`);
+                });
+        }
+    });
+
+    function remove(collaborator){
+        fetch('/controller/removeCollaborator', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "id" : collaborator.collaboratorID, "fileID" : fileID})
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(`${errorData.error}\n`);
+                    });
+                }
+                return response.json();
+            })
+            .then(result => {
+                alert(result.message);
+            })
+            .catch(error => {
+                alert(`Error: ${error.message}`);
+            });
+    }
+
+    signOutButton.addEventListener("click", () => {
+        document.querySelector("textarea").value = "";
+        outputArea.textContent = "";
+        fetch('/controller/signOut', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ action: "signOut" })
+        })
+        this.projectName = null;
+        this.fileID = null;
+        this.role = null;
+        this.codeEditor = "null";
+
+        localStorage.clear();
+        window.location.href = "/controller/index";
+    });
+
+    window.addEventListener("click", () => {
+        projectsDropdown.style.display = "none";
+    });
+
+
+</script>
 </body>
 </html>
